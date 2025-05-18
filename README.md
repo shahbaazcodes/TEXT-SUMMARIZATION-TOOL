@@ -25,18 +25,11 @@ AI in real-world content simplification tasks.
 
 ---
 
-## 🚀 Features
+### 🚀 Features
 
 - ✂️ **Abstractive Summarization** using transformer models like `BART` or `T5`
 
-The main objective of this tool was to reduce reading time while
-retaining the original context and meaning of large paragraphs or
-documents. I utilized the **Hugging Face Transformers** library to
-integrate pre-trained models like `facebook/bart-large-cnn` for
-abstractive summarization. These models are capable of generating
-summaries that go beyond simple extraction and instead create new
-sentences to express the same information more concisely.
----
+<small>The main objective of this tool was to reduce reading time while retaining the original context and meaning of large paragraphs or documents. I utilized the Hugging Face Transformers library to integrate pre-trained models like `facebook/bart-large-cnn` for abstractive summarization. These models are capable of generating summaries that go beyond simple extraction and instead create new sentences to express the same information more concisely.</small>
 
 ## 📷 Screenshot
 
