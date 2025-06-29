@@ -37,26 +37,4 @@ if summary:
         mime="text/plain",
     )
 
-# Divider
-st.markdown("---")
 
-# Optional Chatbot Explanation (OpenAI-powered)
-with st.expander("💬 Want to understand your summary better?"):
-    st.markdown("Ask any question about your summary below.")
-
-    question = st.text_input("🤖 Ask the chatbot:")
-    if question and summary:
-        from openai import OpenAI
-        client = OpenAI(api_key=st.secrets["openai"]["api_key"])  # or use env if you're local
-
-        with st.spinner("Thinking..."):
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that explains text summaries."},
-                    {"role": "user", "content": f"Summary: {summary}\n\nQuestion: {question}"}
-                ]
-            )
-            reply = response.choices[0].message.content
-            st.markdown("#### 🤖 Chatbot Says:")
-            st.write(reply)
