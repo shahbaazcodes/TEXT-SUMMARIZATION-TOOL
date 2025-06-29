@@ -1,12 +1,62 @@
 import streamlit as st
 from transformers import pipeline
 
-st.title("Text Summarization Tool")
+# Set page config
+st.set_page_config(page_title="📝 Text Summarizer", layout="centered")
 
-text = st.text_area("Enter your text to summarize", height=300)
+# Title
+st.markdown("<h1 style='text-align: center;'>📝 Text Summarization Tool</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Summarize any text and download the result</p>", unsafe_allow_html=True)
 
-if st.button("Summarize"):
-    summarizer = pipeline("summarization")
-    summary = summarizer(text, max_length=150, min_length=40, do_sample=False)
-    st.subheader("Summary:")
-    st.write(summary[0]['summary_text'])
+# Text input
+text_input = st.text_area("✏️ Enter your text to summarize:", height=300)
+
+# Summarizer model
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+
+summary = ""
+if st.button("🚀 Summarize"):
+    if text_input.strip() == "":
+        st.warning("Please enter some text.")
+    else:
+        with st.spinner("Generating summary..."):
+            result = summarizer(text_input, max_length=100, min_length=30, do_sample=False)
+            summary = result[0]['summary_text']
+            st.success("✅ Summary generated!")
+
+# Show summary
+if summary:
+    st.markdown("### 📌 Summary:")
+    st.write(summary)
+
+    # Download button
+    st.download_button(
+        label="💾 Download Summary as .txt",
+        data=summary,
+        file_name="summary.txt",
+        mime="text/plain",
+    )
+
+# Divider
+st.markdown("---")
+
+# Optional Chatbot Explanation (OpenAI-powered)
+with st.expander("💬 Want to understand your summary better?"):
+    st.markdown("Ask any question about your summary below.")
+
+    question = st.text_input("🤖 Ask the chatbot:")
+    if question and summary:
+        from openai import OpenAI
+        client = OpenAI(api_key=st.secrets["openai"]["api_key"])  # or use env if you're local
+
+        with st.spinner("Thinking..."):
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that explains text summaries."},
+                    {"role": "user", "content": f"Summary: {summary}\n\nQuestion: {question}"}
+                ]
+            )
+            reply = response.choices[0].message.content
+            st.markdown("#### 🤖 Chatbot Says:")
+            st.write(reply)
